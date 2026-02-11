@@ -1,4 +1,13 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Smart Soil Analysis and Crop Recommendation System — agri-tech dashboard for soil analysis and crop recommendations (Next.js, OpenAI, Supabase/Drizzle).
+
+## Environment variables
+
+Copy `.env.example` to `.env.local` and set:
+
+- `DATABASE_URL` — Postgres connection string (e.g. Supabase)
+- `OPENAI_API_KEY` — OpenAI API key for soil analysis
+
+Do not commit `.env.local` or expose keys.
 
 ## Getting Started
 
