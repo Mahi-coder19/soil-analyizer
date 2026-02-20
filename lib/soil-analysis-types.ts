@@ -92,6 +92,7 @@ export const soilAnalysisInputSchema = z.object({
   temperature: z.number(),
   humidity: z.number().min(0).max(100),
   location: z.string().min(1),
+  language: z.string().min(2).max(10).default("en"),
 });
 
 export type SoilAnalysisInput = z.infer<typeof soilAnalysisInputSchema>;

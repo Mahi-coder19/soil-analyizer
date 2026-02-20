@@ -19,9 +19,28 @@ Always respond with valid JSON matching the exact schema provided. Use Indian co
 - Nutrient levels (nitrogen, phosphorus, potassium): "Low", "Optimal", or "High" based on standard soil test ranges.
 - pH status: "Acidic" (pH < 6.5), "Neutral" (6.5-7.5), or "Alkaline" (pH > 7.5).
 - Soil type: infer from pH and nutrients, e.g. "Loamy", "Clay", "Sandy".
-- Fertility level: "Low", "Medium", or "High" based on overall nutrients and pH.`;
+-- Fertility level: "Low", "Medium", or "High" based on overall nutrients and pH.
+
+You may be asked to respond in different languages, but the active language will always be specified in the user message. Always keep JSON field names in English regardless of the requested language.`;
+
+function getLanguageName(code: string | undefined): string {
+  const normalized = (code || "en").toLowerCase();
+  switch (normalized) {
+    case "hi":
+    case "hi-in":
+      return "Hindi";
+    case "ta":
+    case "ta-in":
+      return "Tamil";
+    case "en":
+    case "en-in":
+    default:
+      return "English";
+  }
+}
 
 export function buildUserMessage(input: SoilAnalysisInput): string {
+  const languageName = getLanguageName((input as SoilAnalysisInput & { language?: string }).language);
   return `Analyze the following soil and climate data and provide the full structured response.
 
 - pH: ${input.ph}
@@ -34,6 +53,8 @@ export function buildUserMessage(input: SoilAnalysisInput): string {
 - Location (State, District): ${input.location}
 
 Base all recommendations, yields, sowing/harvest, irrigation, fertilizer, and risks strictly on this state and district.
+
+Use ${languageName} for all human-readable text values (crop names, reasons, descriptions, labels, etc.), but keep every JSON field name exactly as defined in the schema in English. Do not include any explanation outside of the JSON.
 
 Provide top 3 recommended crops (suitable for this location) with suitability percentage, reason, and ideal season. Include yield prediction (estimated and state average for this state), sowing/harvest windows for this region, irrigation and fertilizer recommendations, risk analysis (location-specific), and soil improvement suggestions.`;
 }

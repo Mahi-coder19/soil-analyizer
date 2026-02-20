@@ -21,6 +21,7 @@ function getInputHash(input: Record<string, unknown>): string {
     temperature: input.temperature,
     humidity: input.humidity,
     location: String(input.location).trim().toLowerCase(),
+    language: String(input.language ?? "en").toLowerCase(),
   };
   const str = JSON.stringify(normalized, Object.keys(normalized).sort());
   return createHash("sha256").update(str).digest("hex");

@@ -8,9 +8,10 @@ import { soilAnalysisInputSchema, type SoilAnalysisInput } from "@/lib/soil-anal
 import type { SoilAnalysisResponse } from "@/lib/soil-analysis-types";
 
 type SoilInputFormProps = {
-  onSuccess: (data: SoilAnalysisResponse, cached?: boolean) => void;
+  onSuccess: (data: SoilAnalysisResponse, cached?: boolean, language?: string) => void;
   onError: (message: string) => void;
   disabled?: boolean;
+  onLanguageChange?: (language: string) => void;
 };
 
 const defaultValues: SoilAnalysisInput = {
@@ -22,14 +23,18 @@ const defaultValues: SoilAnalysisInput = {
   temperature: 28,
   humidity: 70,
   location: "",
+  language: "en",
 };
 
-export function SoilInputForm({ onSuccess, onError, disabled }: SoilInputFormProps) {
+export function SoilInputForm({ onSuccess, onError, disabled, onLanguageChange }: SoilInputFormProps) {
   const [form, setForm] = useState<SoilAnalysisInput>(defaultValues);
   const [loading, setLoading] = useState(false);
 
   const update = (key: keyof SoilAnalysisInput, value: string | number) => {
     setForm((prev) => ({ ...prev, [key]: value }));
+    if (key === "language" && typeof value === "string" && onLanguageChange) {
+      onLanguageChange(value);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -56,7 +61,7 @@ export function SoilInputForm({ onSuccess, onError, disabled }: SoilInputFormPro
         onError(json.error || "Analysis failed");
         return;
       }
-      onSuccess(json.data as SoilAnalysisResponse, json.cached);
+      onSuccess(json.data as SoilAnalysisResponse, json.cached, form.language);
     } catch {
       onError("Network error. Please try again.");
     } finally {
@@ -181,6 +186,20 @@ export function SoilInputForm({ onSuccess, onError, disabled }: SoilInputFormPro
               onChange={(e) => update("location", e.target.value)}
               disabled={isDisabled}
             />
+          </Field>
+          <Field className="sm:col-span-2">
+            <FieldLabel htmlFor="language">Language</FieldLabel>
+            <select
+              id="language"
+              className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              value={form.language}
+              onChange={(e) => update("language", e.target.value)}
+              disabled={isDisabled}
+            >
+              <option value="en">English</option>
+              <option value="hi">Hindi</option>
+              <option value="ta">Tamil</option>
+            </select>
           </Field>
         </div>
         <div className="flex justify-end pt-2">

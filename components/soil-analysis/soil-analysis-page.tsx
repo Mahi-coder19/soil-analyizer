@@ -11,10 +11,14 @@ export function SoilAnalysisPage() {
   const [cached, setCached] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [language, setLanguage] = useState<"en" | "hi" | "ta">("en");
 
-  const handleSuccess = (data: SoilAnalysisResponse, fromCache?: boolean) => {
+  const handleSuccess = (data: SoilAnalysisResponse, fromCache?: boolean, lang?: string) => {
     setResult(data);
     setCached(!!fromCache);
+    if (lang === "en" || lang === "hi" || lang === "ta") {
+      setLanguage(lang);
+    }
     setError("");
   };
 
@@ -42,10 +46,15 @@ export function SoilAnalysisPage() {
         <>
           <div className="w-full max-w-xl mx-auto rounded-2xl border border-border bg-card p-6 shadow-sm">
             <SoilInputForm
-            onSuccess={handleSuccess}
-            onError={handleError}
-            disabled={loading}
-          />
+              onSuccess={handleSuccess}
+              onError={handleError}
+              disabled={loading}
+              onLanguageChange={(lang) => {
+                if (lang === "en" || lang === "hi" || lang === "ta") {
+                  setLanguage(lang);
+                }
+              }}
+            />
           </div>
           {error && (
             <div
@@ -63,7 +72,7 @@ export function SoilAnalysisPage() {
               Analyze again
             </Button>
           </div>
-          <AnalysisDashboard data={result} cached={cached} />
+          <AnalysisDashboard data={result} cached={cached} language={language} />
         </div>
       )}
     </div>
