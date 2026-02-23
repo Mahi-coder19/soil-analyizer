@@ -73,7 +73,9 @@ export async function POST(request: Request) {
         soilAnalysisResponseSchema,
         "soil_analysis"
       ),
-    });
+    });  
+
+    
 
     const message = completion.choices[0]?.message;
     if (!message?.parsed) {
